@@ -1,11 +1,12 @@
-import { Button } from "@chakra-ui/react"
+import { Flex, Heading } from "@chakra-ui/react"
 
-export default function Home() {
+const Home = async () => {
   return (
-    <Button 
-      colorScheme="teal"
-    >
-      Hello
-    </Button>
+    <Flex>
+      <Heading>Home</Heading>
+    </Flex>
   )
 }
+
+
+export default Home 
