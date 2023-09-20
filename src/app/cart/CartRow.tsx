@@ -54,6 +54,14 @@ const CartRow = ({ index, id, name, price, quantity }: Props) => {
             <Td>
                 <Text>{ price * quantity }</Text>
             </Td>
+            <Td>
+                <Button
+                    colorScheme="red"
+                    onClick={() => setProductQuantity(id, 0)}
+                >
+                    刪除
+                </Button>
+            </Td>
         </Tr>
     )
 }

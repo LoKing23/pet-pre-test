@@ -31,7 +31,7 @@ import CheckoutButton from "./CheckoutButton";
 import useCartStore, { CartProduct } from '@/store/useCartStore';
 import useStore from '@/hooks/useStore';
 
-const TABLE_HEAD = ["序號", "名稱", "編號", "單價", "數量", "總額"];
+const TABLE_HEAD = ["序號", "名稱", "編號", "單價", "數量", "總額", "刪除"];
 
 const BackToProducts = () => {
   return (
@@ -60,6 +60,7 @@ const Cart = () => {
   const productsMap = useStore(useCartStore, state => state.productsMap);
   const products = productsMap && Object.values(productsMap);
   const total = products && products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0) || 0;
+  const isEmpty = products && products.length === 0;
   
   return (
     <Container maxW='1200px' >
