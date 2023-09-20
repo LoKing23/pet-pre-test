@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import PRODUCTS from "../../../products";
+import { getProductList } from "../../../products";
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
@@ -9,17 +9,16 @@ export async function GET(request: NextRequest) {
     const missParams = !(limit ?? offset);
 
     if (missParams) {
-        return NextResponse.json({ message: 'Missing params' }, { status: 400 })
+        return NextResponse.json({ message: 'Missing params', items: [], success: false }, { status: 400 })
     }
 
-    const filteredProducts = keyword
-        ? PRODUCTS.filter((product) => product.name.includes(keyword))
-        : PRODUCTS;
-    const products = filteredProducts.slice(offset, offset + limit);
+    const { items, total } = await getProductList(limit, offset, keyword);
+
     const response = {
-        items: products,
-        total: filteredProducts.length,
-        message: 'success'
+        items,
+        total,
+        message: 'success',
+        success: true
     };
 
     return NextResponse.json(response);

@@ -4,19 +4,15 @@ import { useState, useEffect } from 'react'
 
 const useStore = <T, F>(
   store: (callback: (state: T) => unknown) => unknown,
-  callback: (state: T) => F
+  callback: (state: T) => F,
+  initialValue?: F
 ) => {
   const result = store(callback) as F
-  const [data, setData] = useState<F>()
+  const [data, setData] = useState<F | undefined>(initialValue)
 
   useEffect(() => {
-    setData(result)
+    setData(result);
   }, [result])
-
-  console.log({
-    result,
-    data
-  })
 
   return data
 }

@@ -2,18 +2,22 @@
 
 import React, { useRef } from 'react'
 import { Flex, Input, FlexProps, FormLabel } from '@chakra-ui/react'
-
+import useSearchParamsStore from '@/store/useSearchParamsStore'
+import useStore from '@/hooks/useStore'
 
 const Search = ({...props}: FlexProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
+    const searchParams = useStore(
+        useSearchParamsStore,
+        (state) => state.params?.products,
+    );
+    const setParams = useSearchParamsStore(state => state.setParams);
     const handleEnterPress = (event: KeyboardEvent) => {
+        const keyWord = inputRef.current?.value || '' as string;
+
         // fetch products
-        if (event.key === 'Enter') {
-            const keyWord = inputRef.current?.value;
-            // fetch api
-            console.log({
-                keyWord
-            })
+        if (event.key === 'Enter'  && keyWord !== searchParams?.keyword && searchParams) {
+            setParams('products', { ...searchParams, keyword: keyWord });
         }
     }
     const handleFocus = () => window.addEventListener('keydown', handleEnterPress);

@@ -2,6 +2,7 @@ import { Product } from './../types';
 // useCartStore.ts
 import { create, StateCreator } from 'zustand'
 import { persist } from 'zustand/middleware'
+import{ StagingProduct } from "./useStagingStore";
 
 export type CartProduct = {
     quantity: number;
@@ -17,6 +18,7 @@ type Actions = {
     addProduct: (product: CartProduct) => void,
     setProductQuantity: (id: string, quantity: number) => void,
     clearCart: () => void,
+    batchAddStagingProduct: (products: StagingProduct[]) => void,
 }
 
 // 定義存儲的型別，將狀態和操作組合起來
@@ -38,6 +40,22 @@ const createCartStore: StateCreator<CartStore> = (set, get) => ({
         quantity: 1,
       };
     }
+
+    set({ productsMap: draft });
+  },
+  batchAddStagingProduct: (products: StagingProduct[]) => {
+    const { productsMap } = get();
+    const draft = structuredClone(productsMap);
+
+    products.forEach((product) => {
+      const hasProduct = draft.hasOwnProperty(product.id);
+
+      if (hasProduct) {
+        draft[product.id].quantity += product.quantity;
+      } else {
+        draft[product.id] = product
+      }
+    });
 
     set({ productsMap: draft });
   },

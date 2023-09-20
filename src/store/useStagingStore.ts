@@ -10,11 +10,12 @@ export type StagingProduct = {
 // 定義狀態的型別
 type State = {
     productsMap: { [key: string]: StagingProduct },
+    transactions: Map<string, StagingProduct>;
 }
 
 // 定義操作的型別
 type Actions = {
-    addProduct: (product: StagingProduct) => void,
+    addProduct: (product: Product) => void,
     setProductQuantity: (id: string, quantity: number) => void,
     clearStaging: () => void,
 }
@@ -25,10 +26,18 @@ type StagingStore = State & Actions;
 // 創建存儲並指定型別
 const createStagingStore: StateCreator<StagingStore> = (set, get) => ({
   productsMap: {},
+  transactions: new Map(),
   addProduct: (product) => {
     const { productsMap } = get();
     const draft = structuredClone(productsMap);
     const hasProduct = draft.hasOwnProperty(product.id);
+
+    console.log({
+      product,
+      productsMap,
+      draft,
+      hasProduct,
+    })
 
     if (hasProduct) {
       draft[product.id].quantity++;
@@ -46,6 +55,9 @@ const createStagingStore: StateCreator<StagingStore> = (set, get) => ({
     const draft = structuredClone(productsMap);
     const hasProduct = draft.hasOwnProperty(id);
 
+    console.log('setProductQuantity', id, quantity, hasProduct);
+    
+
     if (hasProduct) {
 
       quantity <= 0 
@@ -54,7 +66,6 @@ const createStagingStore: StateCreator<StagingStore> = (set, get) => ({
       
       set({ productsMap: draft }); 
     }
-
   },
   clearStaging: () => {
     set({ productsMap: {} });
@@ -67,6 +78,27 @@ const persistedStagingStore = persist<StagingStore>(
   createStagingStore,
   {
     name: 'staging-storage',
+    storage: {
+      getItem: (name) => {
+        const str = localStorage.getItem(name) || 'default';
+        return {
+          state: {
+            ...JSON.parse(str).state,
+            transactions: new Map(JSON.parse(str).state.transactions),
+          },
+        }
+      },
+      setItem: (name, newValue) => {
+        const str = JSON.stringify({
+          state: {
+            ...newValue.state,
+            transactions: Array.from(newValue.state.transactions.entries()),
+          },
+        })
+        localStorage.setItem(name, str)
+      },
+      removeItem: (name) => localStorage.removeItem(name),
+  }
   }
 );
 
