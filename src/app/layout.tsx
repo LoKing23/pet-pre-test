@@ -5,7 +5,7 @@ import { Flex, Box, Heading, Stack } from "@chakra-ui/react";
 import Providers from './providers';
 import MenuContainer from "./MenuContainer";
 import MenuList from "./MenuList";
-import Header from "./Header"
+import Header from "./header"
 
 const inter = Inter({ subsets: ['latin'] })
 
