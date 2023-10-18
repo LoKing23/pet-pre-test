@@ -2,7 +2,13 @@ import React from 'react'
 import { Flex, Wrap, WrapItem, Avatar, Text } from '@chakra-ui/react';
 import CartPopIcon from "./CartPopIcon";
 
-const Header = () => {
+type Props = {
+    greeting?: string;
+}
+
+const Header = ({
+    greeting = 'Good morning!',
+}: Props) => {
     return (
         <Flex bgColor="white" boxShadow="xl" p="3" alignItems='center'>
             <Wrap ml="auto">
@@ -10,8 +16,8 @@ const Header = () => {
                     <CartPopIcon />
                 </WrapItem>
                 <WrapItem>
-                    <Text lineHeight='48px'>
-                        Good morning! cute cat.
+                    <Text role="name" lineHeight='48px'>
+                        { `${greeting} cute cat.` }
                     </Text>
                 </WrapItem>
                 <WrapItem>
